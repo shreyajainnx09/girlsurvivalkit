@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Girl Survival Kit 💅</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+
+  <!-- ============================================================
+       GIRL SURVIVAL KIT 💅 — Full Source
+       Sections: CSS Variables → Base Styles → Header → Input UI
+                 → Results → Toast → Dark Mode → JavaScript Logic
+  ============================================================ -->
+
+  <style>
+    /* ── CSS Custom Properties ─────────────────────────────── */
+    :root {
+      --rose:        #f4a5b0;
+      --rose-light:  #fde8ec;
+      --rose-mid:    #e8899a;
+      --rose-dark:   #c0616e;
+      --nude:        #e8d5c4;
+      --nude-light:  #faf5f0;
+      --nude-dark:   #b09070;
+      --lilac:       #d4b8e0;
+      --lilac-light: #f3eaf8;
+      --lilac-dark:  #9b72c0;
+      --cream:       #fdfaf6;
+      --gold:        #c9a96e;
+      --gold-light:  #f7ecd8;
+      --text:        #2d2025;
+      --text-muted:  #7a5c66;
+      --text-hint:   #b08898;
+      --glass-bg:    rgba(255,255,255,0.72);
+      --glass-border:rgba(244,165,176,0.3);
+      --shadow-sm:   0 2px 12px rgba(192,97,110,0.08);
+      --shadow-md:   0 8px 32px rgba(192,97,110,0.12);
+      --shadow-lg:   0 16px 48px rgba(192,97,110,0.18);
+      --radius-sm:   10px;
+      --radius-md:   16px;
+      --radius-lg:   22px;
+      --radius-xl:   30px;
+      --bg-gradient: linear-gradient(135deg, #fde8ec 0%, #faf5f0 45%, #f3eaf8 100%);
+    }
+
+    /* ── Dark Mode Overrides ────────────────────────────────── */
+    body.dark {
+      --rose-light:  #2a1418;
+      --nude-light:  #221518;
+      --lilac-light: #1e1528;
+      --gold-light:  #221a10;
+      --cream:       #1a1015;
+      --glass-bg:    rgba(28,16,20,0.82);
+      --glass-border:rgba(244,165,176,0.15);
+      --shadow-sm:   0 2px 12px rgba(0,0,0,0.3);
+      --shadow-md:   0 8px 32px rgba(0,0,0,0.4);
+      --shadow-lg:   0 16px 48px rgba(0,0,0,0.5);
+      --text:        #f0e8ec;
+      --text-muted:  #c4a8b2;
+      --text-hint:   #8a6878;
+      --bg-gradient: linear-gradient(135deg, #1a0f12 0%, #1c1520 45%, #140f1a 100%);
+    }
+
+    /* ── Reset & Base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      color: var(--text);
+      transition: background 0.4s, color 0.3s;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── Ambient Floating Decoration ───────────────────────── */
+    .ambient {
+      position: fixed;
+      pointer-events: none;
+      font-size: 28px;
+      opacity: 0.10;
+      z-index: 0;
+      animation: floatAmbient var(--dur, 7s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      user-select: none;
+    }
+    @keyframes floatAmbient {
+      0%,100% { transform: translateY(0) rotate(var(--r1,-8deg)) scale(1); }
+      50%      { transform: translateY(-22px) rotate(var(--r2,8deg)) scale(1.05); }
+    }
+
+    /* ── Sticky Header ──────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--rose-dark) 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-btn {
+      background: var(--rose-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--rose-dark);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+    .pill-btn:hover { background: var(--rose); color: white; transform: translateY(-1px); }
+
+    /* ── Page Layout ────────────────────────────────────────── */
+    .page {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Hero Tagline ───────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--rose-dark);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+    .hero-sparkle {
+      font-size: 18px;
+      display: inline-block;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+    @keyframes sparkle {
+      0%,100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50%      { transform: scale(1.3) rotate(20deg); opacity: 0.8; }
+    }
+
+    /* ── Glass Card ─────────────────────────────────────────── */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 16px;
+      animation: fadeUp 0.45s ease both;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .glass-card:hover { box-shadow: var(--shadow-lg); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Section Label ──────────────────────────────────────── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--glass-border), transparent);
+    }
+
+    /* ── Situation Grid ─────────────────────────────────────── */
+    .situation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .sit-btn {
+      background: var(--nude-light);
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 12px 8px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.22s, border-color 0.22s, color 0.22s, transform 0.22s, box-shadow 0.22s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .sit-btn:hover {
+      background: var(--rose-light);
+      border-color: var(--rose);
+      color: var(--rose-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .sit-btn.active {
+      border-color: var(--rose);
+      background: var(--rose-light);
+      color: var(--rose-dark);
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(192,97,110,0.2);
+      transform: translateY(-2px);
+    }
+    .sit-btn .sit-emoji {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ── Two-column Row ─────────────────────────────────────── */
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* ── Select Inputs ──────────────────────────────────────── */
+    select {
+      width: 100%;
+      background: var(--nude-light);
+      border: 1.5px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 34px 10px 12px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c0616e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--rose);
+      box-shadow: 0 0 0 3px rgba(244,165,176,0.2);
+    }
+
+    /* ── Vibe Selector ──────────────────────────────────────── */
+    .vibe-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .vibe-btn {
+      background: var(--nude-light);
+      border: 1.5px solid transparent;
+      border-radius: 24px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .vibe-btn:hover {
+      border-color: var(--lilac);
+      background: var(--lilac-light);
+      color: var(--lilac-dark);
+      transform: translateY(-1px);
+    }
+    .vibe-btn.active {
+      border-color: var(--lilac);
+      background: var(--lilac-light);
+      color: var(--lilac-dark);
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(180,150,220,0.2);
+    }
+
+    /* ── Toggle Switch ──────────────────────────────────────── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--nude-light);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .toggle-info { flex: 1; }
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .toggle-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .toggle-switch {
+      width: 44px;
+      height: 26px;
+      background: #d4bfc8;
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.25s;
+      flex-shrink: 0;
+    }
+    .toggle-switch.on { background: var(--rose); }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: left 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    .toggle-switch.on::after { left: 21px; }
+
+    /* ── CTA Button ─────────────────────────────────────────── */
+    .cta-wrap { margin: 6px 0 4px; }
+    .cta-btn {
+      width: 100%;
+      padding: 17px 24px;
+      background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-mid) 50%, var(--gold) 100%);
+      background-size: 200% 200%;
+      border: none;
+      border-radius: var(--radius-lg);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s, background-position 0.4s;
+      box-shadow: 0 6px 24px rgba(192,97,110,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(192,97,110,0.5);
+      background-position: 100% 50%;
+    }
+    .cta-btn:hover::before { opacity: 1; }
+    .cta-btn:active { transform: translateY(-1px); }
+    .cta-btn.loading {
+      pointer-events: none;
+      opacity: 0.88;
+    }
+
+    /* ── Loading Spinner ────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results Section ────────────────────────────────────── */
+    #results { display: none; margin-top: 8px; }
+    #results.visible { display: block; animation: fadeUp 0.4s ease both; }
+
+    .results-hero {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .results-hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 26px;
+      color: var(--rose-dark);
+      margin-bottom: 4px;
+    }
+    .results-hero p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Progress Bar ───────────────────────────────────────── */
+    .progress-wrap { margin-bottom: 16px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      height: 5px;
+      background: var(--nude);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* ── Mode Toggle Row ────────────────────────────────────── */
+    .mode-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .mode-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mode-btn:hover { background: var(--rose-light); color: var(--rose-dark); border-color: var(--rose); }
+    .mode-btn.active { background: var(--rose-light); color: var(--rose-dark); border-color: var(--rose); font-weight: 600; }
+
+    /* ── Kit Category Card ──────────────────────────────────── */
+    .kit-cat {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+      animation: fadeUp 0.35s ease both;
+      transition: background 0.3s;
+    }
+
+    .cat-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--rose-dark);
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .cat-head-emoji { font-size: 17px; }
+
+    /* ── Checklist Item ─────────────────────────────────────── */
+    .kit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 6px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .kit-item:hover { background: var(--rose-light); }
+    .kit-item.hidden { display: none !important; }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--rose);
+      border-radius: 5px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      margin-top: 1px;
+      background: transparent;
+    }
+    .check-box .check-tick {
+      display: none;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .kit-item.checked .check-box {
+      background: var(--rose);
+      border-color: var(--rose);
+    }
+    .kit-item.checked .check-box .check-tick { display: block; }
+    .kit-item.checked .item-name {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .item-emoji {
+      font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .item-body { flex: 1; min-width: 0; }
+    .item-name {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.4;
+      transition: opacity 0.2s;
+    }
+    .item-tip {
+      font-size: 11px;
+      color: var(--text-hint);
+      margin-top: 2px;
+      display: none;
+      font-style: italic;
+    }
+    .kit-item:hover .item-tip { display: block; }
+
+    /* ── Forgot Section ─────────────────────────────────────── */
+    .forgot-card {
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--rose-light) 100%);
+      border: 1.5px dashed var(--rose);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .forgot-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--rose-dark);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .forgot-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .forgot-tag {
+      display: inline-block;
+      background: var(--glass-bg);
+      border: 1px solid var(--rose);
+      color: var(--rose-dark);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 11px;
+      border-radius: 20px;
+      transition: background 0.15s, transform 0.15s;
+      cursor: default;
+    }
+    .forgot-tag:hover { background: var(--rose-light); transform: translateY(-1px); }
+
+    /* ── Action Buttons Row ─────────────────────────────────── */
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+
+    .action-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 12px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .action-btn .action-ico { font-size: 18px; display: block; margin-bottom: 4px; }
+    .action-btn:hover {
+      background: var(--rose-light);
+      color: var(--rose-dark);
+      border-color: var(--rose);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ── Shop Section ───────────────────────────────────────── */
+    .shop-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: none;
+      animation: fadeUp 0.3s ease both;
+    }
+    .shop-card.open { display: block; }
+
+    .shop-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--rose-dark);
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+    .shop-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--glass-border);
+      gap: 10px;
+    }
+    .shop-item:last-child { border-bottom: none; }
+    .shop-item-name { font-size: 12px; color: var(--text); }
+    .shop-link {
+      background: var(--rose-light);
+      border: 1px solid var(--rose);
+      color: var(--rose-dark);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 16px;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .shop-link:hover { background: var(--rose); color: white; }
+
+    /* ── Toast ──────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg, var(--rose-dark), var(--gold));
+      color: white;
+      padding: 11px 26px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      z-index: 9999;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      pointer-events: none;
+      box-shadow: var(--shadow-lg);
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .site-footer {
+      text-align: center;
+      padding: 28px 20px 36px;
+      border-top: 1px solid var(--glass-border);
+      margin-top: 8px;
+    }
+    .footer-made {
+      font-size: 12px;
+      color: var(--text-hint);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 8px 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .footer-link:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .footer-link.insta:hover {
+      background: linear-gradient(135deg, #fde8ec, #f3eaf8);
+      border-color: var(--rose);
+      color: var(--rose-dark);
+    }
+    .footer-link.email:hover {
+      background: var(--gold-light);
+      border-color: var(--gold);
+      color: #8a6020;
+    }
+    .footer-link svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 26px; }
+      .situation-grid { grid-template-columns: repeat(2, 1fr); }
+      .row-2 { grid-template-columns: 1fr; }
+      .action-row { grid-template-columns: repeat(3, 1fr); }
+      .page { padding: 22px 14px 56px; }
+      header { padding: 12px 16px; }
+      .logo { font-size: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Ambient Floating Decorations ──────────────────────── -->
+  <span class="ambient" style="top:6%;left:4%;--dur:8s;--delay:0s;--r1:-10deg;--r2:10deg">💄</span>
+  <span class="ambient" style="top:14%;right:5%;--dur:9s;--delay:1.5s;--r1:5deg;--r2:-12deg">👜</span>
+  <span class="ambient" style="top:38%;left:2%;--dur:7s;--delay:3s;--r1:-15deg;--r2:8deg">✨</span>
+  <span class="ambient" style="top:55%;right:3%;--dur:10s;--delay:2s;--r1:8deg;--r2:-10deg">💅</span>
+  <span class="ambient" style="top:70%;left:3%;--dur:8.5s;--delay:4s;--r1:-5deg;--r2:15deg">🌸</span>
+  <span class="ambient" style="top:82%;right:5%;--dur:7.5s;--delay:0.5s;--r1:10deg;--r2:-8deg">💎</span>
+
+  <!-- ── Sticky Header ──────────────────────────────────────── -->
+  <header>
+    <div class="logo">Girl Survival Kit 💅</div>
+    <div class="header-right">
+      <button class="pill-btn" id="darkBtn" onclick="toggleDark()">🌙 Dark Mode</button>
+    </div>
+  </header>
+
+  <!-- ── Main Page Content ─────────────────────────────────── -->
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>Your perfect kit, <span class="hero-sparkle">✨</span> curated.</h1>
+      <p>Tell us your situation & vibe — we'll build your personalised survival kit</p>
+    </div>
+
+    <!-- ┌─ CARD 1: Situation ──────────────────────────────────┐ -->
+    <div class="glass-card" style="animation-delay:0.05s">
+      <div class="section-label">✦ Your Situation (required)</div>
+      <div class="situation-grid" id="sitGrid">
+        <button class="sit-btn active" data-sit="travel"     onclick="selectSit(this)"><span class="sit-emoji">✈️</span>Travel</button>
+        <button class="sit-btn"       data-sit="college"    onclick="selectSit(this)"><span class="sit-emoji">📚</span>College Day</button>
+        <button class="sit-btn"       data-sit="party"      onclick="selectSit(this)"><span class="sit-emoji">🪩</span>Party / Night Out</button>
+        <button class="sit-btn"       data-sit="work"       onclick="selectSit(this)"><span class="sit-emoji">💼</span>Work / Internship</button>
+        <button class="sit-btn"       data-sit="date"       onclick="selectSit(this)"><span class="sit-emoji">🌹</span>Date Night</button>
+        <button class="sit-btn"       data-sit="emergency"  onclick="selectSit(this)"><span class="sit-emoji">🚨</span>Emergency Mode</button>
+      </div>
+    </div>
+
+    <!-- ┌─ CARD 2: Duration, Weather, Vibe ────────────────────┐ -->
+    <div class="glass-card" style="animation-delay:0.1s">
+      <div class="row-2">
+        <div>
+          <div class="field-label">Duration</div>
+          <select id="duration">
+            <option value="">Any duration</option>
+            <option value="hours">Few hours</option>
+            <option value="fullday">Full day</option>
+            <option value="multiday">Multiple days</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-label">Weather</div>
+          <select id="weather">
+            <option value="">Any weather</option>
+            <option value="hot">Hot ☀️</option>
+            <option value="cold">Cold ❄️</option>
+            <option value="rainy">Rainy 🌧️</option>
+            <option value="mixed">Mixed 🌤️</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">✦ Your Vibe</div>
+      <div class="vibe-grid" id="vibeGrid">
+        <button class="vibe-btn active" data-vibe="cleangirl"  onclick="selectVibe(this)">✨ Clean Girl</button>
+        <button class="vibe-btn"        data-vibe="itgirl"     onclick="selectVibe(this)">👑 IT Girl</button>
+        <button class="vibe-btn"        data-vibe="chill"      onclick="selectVibe(this)">🌿 Chill</button>
+        <button class="vibe-btn"        data-vibe="highmaint"  onclick="selectVibe(this)">💎 High Maintenance</button>
+        <button class="vibe-btn"        data-vibe="minimal"    onclick="selectVibe(this)">🤍 Minimalist</button>
+      </div>
+    </div>
+
+    <!-- ┌─ CARD 3: Extra Prepared Toggle ──────────────────────┐ -->
+    <div class="glass-card" style="animation-delay:0.15s">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">🛡️ Extra Prepared Mode</div>
+          <div class="toggle-sub">Adds backup items and just-in-case essentials</div>
+        </div>
+        <div class="toggle-switch" id="extraToggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <!-- ┌─ CTA Button ──────────────────────────────────────────┐ -->
+    <div class="cta-wrap">
+      <button class="cta-btn" id="genBtn" onclick="generateKit()">
+        Generate My Kit 💅
+      </button>
+    </div>
+
+    <!-- ┌─ RESULTS SECTION ─────────────────────────────────────┐ -->
+    <div id="results">
+      <!-- dynamically rendered by JS -->
+    </div>
+
+  </div><!-- /.page -->
+
+  <!-- ── Footer ───────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-made">made with 💅 by shreya jain</div>
+    <div class="footer-links">
+      <a class="footer-link insta" href="https://www.instagram.com/shreyajainnx?igsh=Z2NiMnBwYXRnbDI0" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <circle cx="12" cy="12" r="4.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        @shreyajainnx
+      </a>
+      <a class="footer-link email" href="mailto:shreyajainn0905@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <polyline points="2,4 12,13 22,4"/>
+        </svg>
+        shreyajainn0905@gmail.com
+      </a>
+    </div>
+  </footer>
+
+  <!-- ── Toast Notification ─────────────────────────────────── -->
+  <div id="toast"></div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT — All Logic
+  ============================================================ -->
+  <script>
+    /* ── State ─────────────────────────────────────────────── */
+    let selectedSit  = 'travel';
+    let selectedVibe = 'cleangirl';
+    let miniMode     = false;
+    let shopOpen     = false;
+
+    /* ── UI Helpers ─────────────────────────────────────────── */
+    function selectSit(el) {
+      document.querySelectorAll('.sit-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      selectedSit = el.dataset.sit;
+    }
+
+    function selectVibe(el) {
+      document.querySelectorAll('.vibe-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      selectedVibe = el.dataset.vibe;
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle('dark');
+      const btn = document.getElementById('darkBtn');
+      btn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2400);
+    }
+
+    /* ── Kit Data ───────────────────────────────────────────── */
+    // Each item: { e: emoji, t: title, tip: tooltip, mini: boolean (essential?) }
+
+    const BEAUTY = {
+      travel: [
+        { e:'💄', t:'Tinted lip balm',           tip:'Moisturises + adds colour — true double duty',    mini:true  },
+        { e:'✨', t:'Mini setting spray',          tip:'Keeps makeup fresh through long journeys',        mini:false },
+        { e:'🧴', t:'Micellar water wipes',        tip:'Cleanses face without needing water',             mini:true  },
+        { e:'👁️', t:'Mascara',                    tip:'Opens up eyes after long flights',                mini:false },
+        { e:'🌟', t:'Hydrating face mist',         tip:'Combats dry aircraft cabin air instantly',        mini:false },
+        { e:'🌸', t:'SPF moisturiser',             tip:'Sun protection is non-negotiable even in transit',mini:true  },
+      ],
+      party: [
+        { e:'💄', t:'Bold lip (travel size)',      tip:'The hero of any party look',                     mini:true  },
+        { e:'🌟', t:'Highlighter stick',           tip:'Quick glow touch-up between songs',              mini:true  },
+        { e:'🪞', t:'Blotting papers',             tip:'Banishes shine without ruining foundation',      mini:true  },
+        { e:'✨', t:'Glitter liner',               tip:'Instant glamour upgrade in 30 seconds',          mini:false },
+        { e:'💅', t:'Nail glue',                   tip:'For emergency broken nail rescues',               mini:false },
+        { e:'🌸', t:'Mini perfume rollerball',     tip:'Reapply your signature scent after dancing',     mini:true  },
+      ],
+      college: [
+        { e:'💄', t:'Tinted lip balm',             tip:'Low effort, high impact for 8am lectures',       mini:true  },
+        { e:'🌸', t:'BB cream',                    tip:'Quick coverage for bleary-eyed mornings',        mini:true  },
+        { e:'👁️', t:'Mascara',                    tip:'Wakes up tired eyes instantly',                  mini:true  },
+        { e:'🪞', t:'Blotting papers',             tip:'Stay fresh between classes',                     mini:false },
+        { e:'✨', t:'Brow gel',                    tip:'Pulls your face together in seconds',            mini:false },
+      ],
+      work: [
+        { e:'💄', t:'Nude lip liner',              tip:'Professional, polished, and long-lasting',       mini:true  },
+        { e:'👁️', t:'Concealer stick',            tip:'Erases under-eye circles for early meetings',    mini:true  },
+        { e:'✨', t:'Pressed powder',              tip:'Midday shine control at your desk',               mini:false },
+        { e:'💋', t:'Neutral lipstick',            tip:'Boardroom-ready in under a minute',              mini:false },
+        { e:'🌸', t:'Mini perfume',                tip:'Professional fragrance refresh post-commute',    mini:true  },
+      ],
+      date: [
+        { e:'💄', t:'Statement lip colour',        tip:'The first thing they will notice',               mini:true  },
+        { e:'🌟', t:'Highlighter',                 tip:'Lit-from-within glow for candlelit settings',    mini:true  },
+        { e:'🪞', t:'Mini compact mirror',         tip:'Pre-date check and mid-dinner touch-up',         mini:true  },
+        { e:'✨', t:'Eyeshadow palette',           tip:'Eyes that tell a whole story',                   mini:false },
+        { e:'💅', t:'Nail file',                   tip:'Last-minute nail smoothing before you arrive',   mini:false },
+        { e:'🌸', t:'Perfume rollerball',          tip:'Reapply your signature scent before dessert',    mini:true  },
+      ],
+      emergency: [
+        { e:'💄', t:'Lip balm',                    tip:'Dry lips make everything feel worse',            mini:true  },
+        { e:'🌸', t:'Tinted moisturiser',          tip:'The bare minimum of coverage you need',          mini:true  },
+      ],
+    };
+
+    const HEALTH = {
+      travel: [
+        { e:'🩹', t:'Mini first aid kit',          tip:'Blisters, cuts, and travel mishaps happen',      mini:true  },
+        { e:'💊', t:'Ibuprofen / paracetamol',     tip:'Headaches do not wait for a pharmacy',           mini:true  },
+        { e:'🧴', t:'Hand sanitiser (60ml)',        tip:'Airports are among the germiest places',         mini:true  },
+        { e:'😷', t:'Refreshing face wipes',       tip:'Feel human again after a long journey',          mini:false },
+        { e:'💧', t:'Electrolyte packet',           tip:'A hydration hack for dehydrating flights',       mini:false },
+        { e:'🤒', t:'Antihistamine',               tip:'New environments, new allergies',                mini:false },
+      ],
+      party: [
+        { e:'💊', t:'Pain reliever',               tip:'Preemptive headache care is wisdom',             mini:true  },
+        { e:'🩹', t:'Blister patches',             tip:'Heels cause blisters every single time',         mini:true  },
+        { e:'🧴', t:'Hand sanitiser',              tip:'Clubs are genuinely not clean places',           mini:true  },
+        { e:'🌿', t:'Mints / breath strips',       tip:'Non-negotiable for any social situation',        mini:true  },
+        { e:'💧', t:'Small water bottle',          tip:'Dancing dehydrates faster than you think',       mini:false },
+      ],
+      college: [
+        { e:'💊', t:'Ibuprofen',                   tip:'Study session headaches are universal',          mini:true  },
+        { e:'🌿', t:'Mints / gum',                 tip:'Post-coffee breath care is basic courtesy',      mini:true  },
+        { e:'🧴', t:'Hand sanitiser',              tip:'Shared keyboards = shared germs',                mini:true  },
+        { e:'🩹', t:'Band-aids',                   tip:'New shoes and cobblestone campuses do not mix',  mini:false },
+        { e:'💧', t:'Reusable water bottle',       tip:'Hydration improves concentration significantly', mini:true  },
+      ],
+      work: [
+        { e:'💊', t:'Headache medication',         tip:'Deadlines reliably cause tension headaches',     mini:true  },
+        { e:'🌿', t:'Mints',                       tip:'Pre-meeting breath confidence essential',        mini:true  },
+        { e:'🧴', t:'Hand cream',                  tip:'Office air conditioning dries hands out fast',   mini:false },
+        { e:'👁️', t:'Eye drops',                  tip:'Screen fatigue relief for long afternoons',      mini:false },
+        { e:'🩹', t:'Blister patches',             tip:'New work shoes are always broken in painfully',  mini:false },
+      ],
+      date: [
+        { e:'🌿', t:'Mints / gum',                 tip:'Kiss-ready breath is the baseline requirement',  mini:true  },
+        { e:'💊', t:'Ibuprofen',                   tip:'Nerves reliably produce tension headaches',      mini:true  },
+        { e:'🩹', t:'Blister patches',             tip:'New heels betray you every single time',         mini:true  },
+        { e:'💧', t:'Travel deodorant',            tip:'Nervous sweating is real and treatable',         mini:false },
+      ],
+      emergency: [
+        { e:'💊', t:'Pain reliever',               tip:'First line of defence against everything',       mini:true  },
+        { e:'🩸', t:'Pads / tampons',              tip:'Periods do not announce themselves',             mini:true  },
+        { e:'🤒', t:'Antihistamine',               tip:'Surprise allergies are genuinely surprising',    mini:true  },
+        { e:'🩹', t:'Full first aid kit',          tip:'Be prepared for anything that could happen',     mini:true  },
+        { e:'🧴', t:'Antiseptic wipes',            tip:'Clean wounds properly even when out and about',  mini:false },
+      ],
+    };
+
+    const FASHION = {
+      travel: [
+        { e:'🪡', t:'Travel sewing kit',           tip:'Button crisis on a trip = wardrobe disaster',   mini:false },
+        { e:'📎', t:'Safety pins x4',              tip:'Fix anything instantly with zero effort',        mini:true  },
+        { e:'🎽', t:'Lint roller',                 tip:'Especially critical for dark outfits',           mini:false },
+        { e:'👟', t:'Foldable ballet flats',       tip:'Heels survive trips; feet generally do not',     mini:false },
+        { e:'🪡', t:'Stain remover pen',           tip:'Treat spills immediately before they set',       mini:true  },
+      ],
+      party: [
+        { e:'📎', t:'Safety pins x4',              tip:'Dress gaps, bra straps, all outfit crises',      mini:true  },
+        { e:'👠', t:'Heel protectors',             tip:'No more heel-stuck-in-pavement drama',           mini:true  },
+        { e:'🎽', t:'Fashion / body tape',         tip:'Invisible insurance for every daring outfit',    mini:true  },
+        { e:'👜', t:'Mini bag hook',               tip:'Never place your bag on a club floor',           mini:false },
+        { e:'🪡', t:'Stain remover pen',           tip:'Spilled drinks are essentially guaranteed',      mini:true  },
+        { e:'🩰', t:'Spare tights / stockings',   tip:'Ladders happen the moment you leave the house',  mini:false },
+      ],
+      college: [
+        { e:'📎', t:'Safety pins',                 tip:'Wardrobe malfunctions do not check timetables',  mini:true  },
+        { e:'🪡', t:'Stain remover pen',           tip:'Lunch accidents fixed before your next class',   mini:true  },
+        { e:'🎽', t:'Spare hair ties x3',          tip:'You will always need exactly one more',          mini:true  },
+        { e:'👟', t:'Spare shoes in locker',       tip:'Wet weather changes everything',                 mini:false },
+      ],
+      work: [
+        { e:'🎽', t:'Fashion tape',                tip:'Keeps necklines and hems exactly where you want',mini:true  },
+        { e:'📎', t:'Safety pins',                 tip:'Button emergencies mid-presentation',            mini:true  },
+        { e:'🪡', t:'Stain remover pen',           tip:'Coffee on a white shirt handled in seconds',     mini:true  },
+        { e:'👠', t:'Spare flats in desk drawer',  tip:'Commute shoes vs meeting shoes is smart prep',   mini:false },
+        { e:'🎽', t:'Lint roller',                 tip:'Professionalism requires a lint-free blazer',    mini:false },
+      ],
+      date: [
+        { e:'📎', t:'Safety pins',                 tip:'Dress mishaps mid-dinner are catastrophic',      mini:true  },
+        { e:'🎽', t:'Fashion tape',                tip:'Deep V confidence comes from good tape',         mini:true  },
+        { e:'🪡', t:'Stain remover pen',           tip:'Pasta sauce strikes at the worst moments',       mini:true  },
+        { e:'👜', t:'Mini evening bag hook',       tip:'Keep your bag off restaurant floors',            mini:false },
+      ],
+      emergency: [
+        { e:'📎', t:'Safety pins x6',              tip:'More is more when things go wrong',              mini:true  },
+        { e:'🪡', t:'Stain remover pen',           tip:'Can genuinely save any outfit situation',        mini:true  },
+        { e:'🎽', t:'Fashion tape roll',           tip:'Holds more together than you would imagine',     mini:false },
+      ],
+    };
+
+    const TECH = {
+      travel: [
+        { e:'🔋', t:'Portable charger 10000mAh',  tip:'Non-negotiable; charge it the night before',     mini:true  },
+        { e:'📱', t:'All charging cables',         tip:'USB-C, Lightning — bring every type',            mini:true  },
+        { e:'🎧', t:'Noise-cancelling earbuds',    tip:'Absolute sanity preservation on long journeys',  mini:true  },
+        { e:'📄', t:'Screenshot all documents',    tip:'Offline access to boarding passes and tickets',  mini:true  },
+        { e:'🌐', t:'eSIM or pocket WiFi',         tip:'Stay connected abroad without roaming bills',    mini:false },
+        { e:'🔌', t:'Universal plug adapter',      tip:'Different countries, different sockets',         mini:false },
+      ],
+      party: [
+        { e:'🔋', t:'Mini power bank 5000mAh',    tip:'Nights are long and phone batteries are not',    mini:true  },
+        { e:'🎧', t:'Wireless earbuds',            tip:'Uber rides demand the right playlist',           mini:false },
+        { e:'💡', t:'Phone torch (pre-charged)',   tip:'Dark venues, dark car parks — be prepared',      mini:false },
+      ],
+      college: [
+        { e:'🔋', t:'Power bank',                  tip:'Five hours of lectures drains any phone',        mini:true  },
+        { e:'💻', t:'Laptop charger',              tip:'The rule you break until you learn it',          mini:true  },
+        { e:'🎧', t:'Earbuds',                     tip:'Library focus mode requires good audio',         mini:true  },
+        { e:'📱', t:'USB-C multi-port hub',        tip:'One cable to connect every device you own',      mini:false },
+      ],
+      work: [
+        { e:'🔋', t:'Power bank',                  tip:'Dead phone during a meeting equals panic',       mini:true  },
+        { e:'💻', t:'Laptop charger',              tip:'The cardinal rule of professional life',         mini:true  },
+        { e:'🎧', t:'Noise-cancelling earbuds',    tip:'Open-plan office survival technology',           mini:true  },
+        { e:'📱', t:'Multi-port desktop charger',  tip:'Charge laptop, phone, earbuds simultaneously',  mini:false },
+      ],
+      date: [
+        { e:'🔋', t:'Small power bank',            tip:'Maps, Uber, and texting friends drain batteries',mini:true  },
+        { e:'🎧', t:'Earbuds',                     tip:'The Uber playlist is part of the experience',    mini:false },
+      ],
+      emergency: [
+        { e:'🔋', t:'Large power bank (20000mAh)', tip:'Emergency calls require guaranteed battery',     mini:true  },
+        { e:'📱', t:'All cables + adapter',        tip:'Every type of cable you might possibly need',    mini:true  },
+        { e:'💡', t:'Physical torch',              tip:'Phone-independent light source for power cuts',  mini:false },
+      ],
+    };
+
+    const EMERGENCY_ITEMS = {
+      travel: [
+        { e:'🆔', t:'Copies of all travel docs',  tip:'Lost passport hurts less when copies exist',     mini:true  },
+        { e:'💵', t:'Emergency cash (local + £)',  tip:'Cards fail; cash always works',                  mini:true  },
+        { e:'🩸', t:'Period products',             tip:'Periods travel with you everywhere you go',      mini:true  },
+        { e:'📋', t:'Travel insurance details',    tip:'Screenshot your policy and emergency number',    mini:false },
+        { e:'🏥', t:'Prescription meds (extra)',   tip:'Pharmacies abroad may not carry your brand',     mini:false },
+      ],
+      party: [
+        { e:'🔑', t:'Physical house key',          tip:'Dead phone + no key = locked out at 3am',        mini:true  },
+        { e:'💵', t:'Emergency taxi cash',         tip:'Apps crash and card machines fail at midnight',  mini:true  },
+        { e:'🩸', t:'Tampon / pad',                tip:'Periods start precisely when inconvenient',      mini:true  },
+        { e:'📍', t:'Share location with a friend',tip:'Safety is always more important than seeming fun',mini:true },
+        { e:'💊', t:'Personal meds',               tip:'Never skip a dose because you went out',         mini:false },
+      ],
+      college: [
+        { e:'🩸', t:'Pads / tampons',              tip:'Periods do not respect your lecture schedule',   mini:true  },
+        { e:'💵', t:'Emergency cash £20',          tip:'Card machines on campus fail at the worst times',mini:true  },
+        { e:'🔑', t:'Campus ID card',              tip:'You genuinely know why this matters',            mini:true  },
+        { e:'💊', t:'Personal medication',         tip:'Never run out mid-week away from home',          mini:false },
+      ],
+      work: [
+        { e:'🩸', t:'Period products',             tip:'Office surprise periods are the absolute worst',  mini:true  },
+        { e:'💵', t:'Cash for lunch / emergencies',tip:'Card terminals fail at precisely lunchtime',      mini:true  },
+        { e:'🏠', t:'Spare door fob / key',        tip:'Getting locked out makes everything worse',      mini:false },
+        { e:'💊', t:'Personal meds (full pack)',   tip:'Refill before you run out, not after',           mini:false },
+      ],
+      date: [
+        { e:'💵', t:'Enough cash to get home',     tip:'Self-sufficiency is always the safest option',   mini:true  },
+        { e:'📍', t:'Share your location',         tip:'Tell someone exactly where you are going',       mini:true  },
+        { e:'🩸', t:'Period product',              tip:"Murphy's Law applies specifically to date nights",mini:true },
+        { e:'💊', t:'Personal meds',              tip:'Never skip doses for social situations',          mini:false },
+      ],
+      emergency: [
+        { e:'💵', t:'Emergency cash £50+',         tip:'Cash functions when every other system fails',   mini:true  },
+        { e:'🆔', t:'ID + photocopies',            tip:'Always carry identification in any form',        mini:true  },
+        { e:'📋', t:'Emergency contacts written',  tip:'Phone dead — do you know any numbers by heart?', mini:true  },
+        { e:'🩹', t:'Extended first aid kit',      tip:'Be prepared for anything that could occur',      mini:true  },
+        { e:'🔦', t:'Physical torch',              tip:'Power outages and dark environments',             mini:true  },
+        { e:'🩸', t:'Period products (extra)',      tip:'Double the supply; periods love emergencies',    mini:true  },
+      ],
+    };
+
+    const EXTRAS_VIBE = {
+      cleangirl: [
+        { e:'🌿', t:'Glass water bottle',          tip:'Hydration is the clean girl aesthetic pillar',   mini:false },
+        { e:'☀️', t:'SPF lip balm',                tip:'Sun protection is the best anti-ageing habit',   mini:true  },
+        { e:'🧖', t:'Sheet mask (single)',          tip:'Post-travel hotel skin ritual essential',        mini:false },
+        { e:'💆', t:'Gua sha or roller',            tip:'De-puff and destress whenever you need',        mini:false },
+      ],
+      itgirl: [
+        { e:'🕶️', t:'Statement sunglasses',        tip:'Enter every room like you own the entire place', mini:true  },
+        { e:'💐', t:'Signature perfume (travel)',   tip:'Your scent is your personal brand — protect it', mini:true  },
+        { e:'💳', t:'Slim card holder',             tip:'Aesthetic over bulky wallets, always',           mini:true  },
+        { e:'📸', t:'Extra phone storage cleared',  tip:'IT girls never run out of storage mid-moment',  mini:false },
+      ],
+      chill: [
+        { e:'🎵', t:'Curated playlist ready',       tip:'Your vibe is everything; the music sets it',    mini:false },
+        { e:'☕', t:'Reusable coffee cup',           tip:'Chill girls bring their own good cup',          mini:false },
+        { e:'📖', t:'Book or mini journal',         tip:'Downtime is better with something to read',     mini:false },
+        { e:'🌿', t:'Herbal tea bags',              tip:'Emergency calm in a paper packet',               mini:false },
+      ],
+      highmaint: [
+        { e:'💄', t:'Full touch-up makeup kit',     tip:'Multiple shades for multiple moods throughout',  mini:false },
+        { e:'🪞', t:'Compact mirror (large)',        tip:'Check yourself early and check yourself often', mini:true  },
+        { e:'🧴', t:'Full-size signature perfume',  tip:'Not mini. Never mini. Never compromise.',       mini:false },
+        { e:'💅', t:'Nail touch-up polish',         tip:'Chips are simply not something you tolerate',   mini:false },
+        { e:'🌸', t:'Dry shampoo (full can)',        tip:'Volume refreshed, dignity maintained',          mini:false },
+      ],
+      minimal: [
+        { e:'🤍', t:'Multi-use lip + cheek tint',   tip:'One product, infinitely many uses',              mini:true  },
+        { e:'💧', t:'SPF moisturiser (2-in-1)',      tip:'Do absolutely everything in a single step',     mini:true  },
+        { e:'✨', t:'Clear brow gel',               tip:'Groomed brows, zero extra effort required',      mini:true  },
+      ],
+    };
+
+    const WEATHER_EXTRAS = {
+      hot: [
+        { e:'☀️', t:'SPF 50+ spray',               tip:'Reapply every two hours when outdoors',          mini:true  },
+        { e:'🌿', t:'Cooling face mist',            tip:'Instant temperature reduction on demand',        mini:false },
+        { e:'💦', t:'Extra water bottle',           tip:'Hydration is genuinely non-negotiable in heat', mini:true  },
+        { e:'🧴', t:'Invisible deodorant',          tip:'Heat + sweating requires reinforcement',         mini:true  },
+      ],
+      cold: [
+        { e:'💧', t:'Rich lip balm',                tip:'Cold air desiccates lips faster than anything', mini:true  },
+        { e:'🧴', t:'Thick hand cream',             tip:'Cold cracked hands are painful and avoidable',  mini:true  },
+        { e:'🌸', t:'Heavy-duty moisturiser',       tip:'Winter skin needs significantly more than usual',mini:false },
+        { e:'🧣', t:'Mini hand warmers',            tip:'Single-use warmers last up to eight hours',     mini:false },
+      ],
+      rainy: [
+        { e:'☂️', t:'Compact folding umbrella',     tip:'The one item you always somehow forget',        mini:true  },
+        { e:'💨', t:'Anti-frizz serum',             tip:'Humidity is categorically not your hair friend',mini:true  },
+        { e:'👟', t:'Waterproof shoe spray',        tip:'Pre-treat all suede and leather before leaving', mini:false },
+        { e:'🧦', t:'Spare socks in bag',           tip:'Wet socks ruin entire days',                    mini:false },
+      ],
+      mixed: [
+        { e:'🌤️', t:'Light packable layer',        tip:'Temperature swings require adaptable dressing',  mini:false },
+        { e:'💧', t:'Lip balm with SPF',            tip:'Both sun and wind attack lips from different angles',mini:true},
+        { e:'☂️', t:'Compact umbrella',            tip:'Mixed weather means guaranteed surprise rain',   mini:true  },
+      ],
+    };
+
+    const EXTRA_PREP = [
+      { e:'🔋', t:'Backup portable charger',        tip:'When the first one inevitably dies',             mini:false },
+      { e:'📎', t:'Extra safety pins (x8)',         tip:'Double the supply, double the security',         mini:false },
+      { e:'💄', t:'Backup lip product',             tip:'Lose one, immediately use the backup',           mini:false },
+      { e:'🩸', t:'Extra period products (x6)',     tip:'Always more than you calculate needing',         mini:true  },
+      { e:'💊', t:'Extra medications (full pack)',  tip:'Run out at the worst time? That stops here.',    mini:false },
+      { e:'💵', t:'Hidden emergency cash',          tip:'Kept completely separate from your main wallet', mini:true  },
+      { e:'🧴', t:'Mini hand sanitiser x2',         tip:'One for bag, permanently; one for pocket',       mini:false },
+      { e:'🩹', t:'Blister kit (full)',             tip:'Prevention and treatment both covered',           mini:false },
+      { e:'🔑', t:'Spare key with trusted person',  tip:'Tell someone where you are going',               mini:false },
+    ];
+
+    const FORGOT = {
+      travel:    ['Plug adapter 🔌','Nail scissors ✂️','Snack bars 🍫','Sleep mask 😴','Deodorant 🌸','Hairband 🎀','Tissues 🤧','Paracetamol 💊'],
+      party:     ['Backup tights 🩰','Dry shampoo 💨','Body tape 📎','Feminine wash wipes 🫧','Breath strips 💨','Spare earring backs 💍','Phone stand 📱','Spare cash 💵'],
+      college:   ['Snacks 🍎','Backup pen 🖊️','Hand cream 🧴','Pain meds 💊','Spare phone cable 🔌','Tissues 🤧','Hairband 🎀','Umbrella ☂️'],
+      work:      ['Desk snack 🍫','Spare tights 🩰','Lip balm 💄','Breath mints 🌿','Hair tie 🎀','Spare earrings 💍','Paracetamol 💊','Deodorant 🌸'],
+      date:      ['Perfume rollerball 🌸','Compact mirror 🪞','Breath strips 💨','Spare contacts 👁️','Blotting paper 📄','Earring backs 💍','Taxi app charged 📱','Cash 💵'],
+      emergency: ['Whistle 🔔','Written emergency contacts 📋','Snack bars 🍫','Water 💧','Torch batteries 🔦','Basic tools 🔧','Local map 🗺️','Spare glasses 👓'],
+    };
+
+    const SHOP = {
+      travel:    [['Charlotte Tilbury Pillow Talk Lip Kit','cultbeauty.co.uk'],['Anker PowerCore 10000 Charger','amazon.co.uk/dp'],['Away Travel Skincare Set','awaytravel.com'],['Universal Plug Adapter','amazon.co.uk/dp']],
+      party:     ['Charlotte Tilbury Hot Lips Lipstick|cultbeauty.co.uk','Scholl Party Feet Gel Heel Cushions|boots.com','Fashion Tape Roll|amazon.co.uk/dp','Anker Mini Power Bank|amazon.co.uk/dp'].map(s=>s.split('|')),
+      college:   [['Glossier You Perfume Rollerball','glossier.com'],['Anker 335 Power Bank','amazon.co.uk/dp'],['Tide To Go Stain Remover Pen','amazon.co.uk/dp'],['JBL Tune Earbuds','amazon.co.uk/dp']],
+      work:      [['Dior Backstage Face & Body Foundation','dior.com'],['Sony WF-1000XM5 Earbuds','sony.co.uk'],['Mulberry Card Holder','mulberry.com'],['Bobbi Brown Concealer Stick','bobbibrowncosmetics.com']],
+      date:      [['Rare Beauty Soft Pinch Blush','rarebeauty.com'],['Sol de Janeiro Brazilian Crush Mist','boots.com'],['Compeed Blister Plasters','amazon.co.uk/dp'],['Estée Lauder Compact Mirror','esteelauder.co.uk']],
+      emergency: [['St. John Ambulance First Aid Kit','amazon.co.uk/dp'],['Anker PowerCore 20100','amazon.co.uk/dp'],['Emergency Foil Blanket','amazon.co.uk/dp'],['Multi-tool Card','amazon.co.uk/dp']],
+    };
+
+    const SIT_LABELS  = { travel:'Travel', college:'College Day', party:'Party Night', work:'Work / Internship', date:'Date Night', emergency:'Emergency Mode' };
+    const VIBE_LABELS = { cleangirl:'Clean Girl', itgirl:'IT Girl', chill:'Chill', highmaint:'High Maintenance', minimal:'Minimalist' };
+    const WEATHER_LABELS = { hot:'Hot ☀️', cold:'Cold ❄️', rainy:'Rainy 🌧️', mixed:'Mixed 🌤️' };
+
+    /* ── Generate Kit ───────────────────────────────────────── */
+    function generateKit() {
+      const btn = document.getElementById('genBtn');
+      btn.classList.add('loading');
+      btn.innerHTML = '<span class="spinner"></span>Building your perfect kit…';
+
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btn.innerHTML = 'Regenerate Kit 💅';
+        renderResults();
+        setTimeout(() => {
+          document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }, 1700);
+    }
+
+    /* ── Render Results ─────────────────────────────────────── */
+    function renderResults() {
+      const sit     = selectedSit;
+      const vibe    = selectedVibe;
+      const weather = document.getElementById('weather').value;
+      const extra   = document.getElementById('extraToggle').classList.contains('on');
+
+      // Build categories array
+      const cats = [
+        { key:'beauty',    label:'Beauty & Makeup',                       emoji:'💄', items: (BEAUTY[sit]       || []) },
+        { key:'health',    label:'Health & Hygiene',                      emoji:'🌿', items: (HEALTH[sit]       || []) },
+        { key:'fashion',   label:'Fashion Fixes',                         emoji:'👗', items: (FASHION[sit]      || []) },
+        { key:'tech',      label:'Tech Essentials',                       emoji:'🔋', items: (TECH[sit]         || []) },
+        { key:'emergency', label:'Emergency Must-Haves',                  emoji:'🚨', items: (EMERGENCY_ITEMS[sit] || []) },
+        { key:'extras',    label:`${VIBE_LABELS[vibe]} Extras ✨`,        emoji:'💫', items: (EXTRAS_VIBE[vibe]  || []) },
+      ];
+
+      if (weather && WEATHER_EXTRAS[weather]) {
+        cats.push({
+          key: 'weather',
+          label: `${WEATHER_LABELS[weather]} Day Essentials`,
+          emoji: weatherEmoji(weather),
+          items: WEATHER_EXTRAS[weather],
+        });
+      }
+
+      if (extra) {
+        cats.push({
+          key: 'backup',
+          label: 'Backup & Just-In-Case 🛡️',
+          emoji: '🛡️',
+          items: EXTRA_PREP,
+        });
+      }
+
+      const totalItems = cats.reduce((s, c) => s + c.items.length, 0);
+      const forgot     = FORGOT[sit]     || [];
+      const shopItems  = SHOP[sit]       || [];
+
+      let html = `
+        <div class="results-hero">
+          <h2>Your ${SIT_LABELS[sit]} Kit is Ready! ✨</h2>
+          <p>${totalItems} items curated for your ${VIBE_LABELS[vibe]} vibe${weather ? ` · ${WEATHER_LABELS[weather]}` : ''}</p>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Kit packing progress</span>
+            <span id="progressPct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <button class="mode-btn active" id="fullBtn"  onclick="setMode('full')">📋 Full Kit</button>
+          <button class="mode-btn"        id="miniBtn"  onclick="setMode('mini')">👜 Mini Bag Mode</button>
+        </div>
+      `;
+
+      // Render categories
+      cats.forEach((cat, ci) => {
+        if (!cat.items.length) return;
+        html += `
+          <div class="kit-cat" style="animation-delay:${ci * 0.06}s">
+            <div class="cat-head">
+              <span class="cat-head-emoji">${cat.emoji}</span>
+              ${cat.label}
+            </div>`;
+
+        cat.items.forEach(item => {
+          const miniClass = item.mini ? 'mini-only' : 'not-mini';
+          html += `
+            <div class="kit-item ${miniClass}" onclick="toggleCheck(this)">
+              <div class="check-box"><span class="check-tick">✓</span></div>
+              <span class="item-emoji">${item.e}</span>
+              <div class="item-body">
+                <div class="item-name">${item.t}</div>
+                <div class="item-tip">${item.tip}</div>
+              </div>
+            </div>`;
+        });
+
+        html += `</div>`;
+      });
+
+      // Forgot section
+      html += `
+        <div class="forgot-card" style="animation-delay:${cats.length * 0.06}s">
+          <div class="forgot-title">🤔 Things You Might Forget</div>
+          <div class="forgot-tags">
+            ${forgot.map(f => `<span class="forgot-tag">${f}</span>`).join('')}
+          </div>
+        </div>`;
+
+      // Action buttons
+      html += `
+        <div class="action-row">
+          <div class="action-btn" onclick="copyList()">
+            <span class="action-ico">📋</span>Copy List
+          </div>
+          <div class="action-btn" onclick="downloadList()">
+            <span class="action-ico">⬇️</span>Download
+          </div>
+          <div class="action-btn" onclick="toggleShop()">
+            <span class="action-ico">🛍️</span>Shop Kit
+          </div>
+        </div>`;
+
+      // Shop section
+      html += `
+        <div class="shop-card" id="shopCard">
+          <div class="shop-title">🛍️ Shop Your Kit Essentials</div>
+          ${shopItems.map(([name, link]) => `
+            <div class="shop-item">
+              <span class="shop-item-name">${name}</span>
+              <a class="shop-link" href="https://${link}" target="_blank" rel="noopener">Shop →</a>
+            </div>`).join('')}
+        </div>`;
+
+      // Inject & show
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = html;
+      resultsEl.classList.add('visible');
+      resultsEl.style.display = 'block';
+
+      miniMode = false;
+      shopOpen = false;
+      updateProgress();
+    }
+
+    /* ── Toggle Checkbox ────────────────────────────────────── */
+    function toggleCheck(el) {
+      el.classList.toggle('checked');
+      updateProgress();
+    }
+
+    /* ── Progress Update ────────────────────────────────────── */
+    function updateProgress() {
+      const items   = document.querySelectorAll('.kit-item:not(.hidden)');
+      const checked = document.querySelectorAll('.kit-item:not(.hidden).checked');
+      const pct     = items.length ? Math.round((checked.length / items.length) * 100) : 0;
+      const fill    = document.getElementById('progressFill');
+      const pctEl   = document.getElementById('progressPct');
+      if (fill)  fill.style.width = pct + '%';
+      if (pctEl) pctEl.textContent = pct + '%';
+    }
+
+    /* ── Mini Bag Mode ──────────────────────────────────────── */
+    function setMode(mode) {
+      miniMode = mode === 'mini';
+      document.getElementById('fullBtn').classList.toggle('active', !miniMode);
+      document.getElementById('miniBtn').classList.toggle('active',  miniMode);
+
+      document.querySelectorAll('.kit-item').forEach(el => {
+        if (miniMode) {
+          el.classList.toggle('hidden', el.classList.contains('not-mini'));
+        } else {
+          el.classList.remove('hidden');
+        }
+      });
+      updateProgress();
+    }
+
+    /* ── Copy to Clipboard ──────────────────────────────────── */
+    function copyList() {
+      const items = [...document.querySelectorAll('.kit-item:not(.hidden) .item-name')]
+        .map(el => el.textContent.trim());
+      const text = `Girl Survival Kit 💅\n${SIT_LABELS[selectedSit]} · ${VIBE_LABELS[selectedVibe]}\n\n` +
+        items.map(i => '☐  ' + i).join('\n');
+      navigator.clipboard.writeText(text)
+        .then(() => showToast('Copied to clipboard! 💅'))
+        .catch(() => showToast('Copy failed — try again'));
+    }
+
+    /* ── Download as Text File ──────────────────────────────── */
+    function downloadList() {
+      const items = [...document.querySelectorAll('.kit-item:not(.hidden) .item-name')]
+        .map(el => el.textContent.trim());
+      const now  = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+      const text = `GIRL SURVIVAL KIT 💅\n${'─'.repeat(32)}\nGenerated: ${now}\nSituation: ${SIT_LABELS[selectedSit]}\nVibe: ${VIBE_LABELS[selectedVibe]}\n${'─'.repeat(32)}\n\n` +
+        items.map(i => '☐  ' + i).join('\n') +
+        `\n\n${'─'.repeat(32)}\nGenerated by Girl Survival Kit 💅`;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a    = document.createElement('a');
+      a.href     = URL.createObjectURL(blob);
+      a.download = 'girl-survival-kit.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      showToast('Downloaded! ✨');
+    }
+
+    /* ── Toggle Shop Section ────────────────────────────────── */
+    function toggleShop() {
+      shopOpen = !shopOpen;
+      const card = document.getElementById('shopCard');
+      if (card) {
+        card.classList.toggle('open', shopOpen);
+        if (shopOpen) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    /* ── Weather Emoji Helper ───────────────────────────────── */
+    function weatherEmoji(w) {
+      return { hot:'☀️', cold:'❄️', rainy:'🌧️', mixed:'🌤️' }[w] || '🌡️';
+    }
+  </script>
+
+</body>
+</html>
